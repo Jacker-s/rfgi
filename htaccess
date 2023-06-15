@@ -1,0 +1,17 @@
+RewriteEngine On
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^([^/]+)/?$ $1.html [L]
+DirectoryIndex inicio.php index.html
+ErrorDocument 404 /error404.html
+# Reescrever a URL para a página inicial
+RewriteRule ^inicio$ inicio.php [L]
+
+# Reescrever a URL para a página sobre
+RewriteRule ^sobre$ sobre.html [L]
+
