@@ -222,7 +222,7 @@
 
         function listFiles() {
             gapi.client.init({
-                apiKey: 'AIzaSyCz3wDFAaDKSaHuLs9luT_TFIJuLveGw9I',
+                apiKey: 'API-AQUI',
                 discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
             }).then(function () {
                 return gapi.client.drive.files.list({
