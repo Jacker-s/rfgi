@@ -2,152 +2,228 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Controle de Ar Condicionado</title>
+<title>Ar Condicionado</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-    body {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "San Francisco",
-                     "Segoe UI", Roboto, Helvetica, Arial;
-        background: linear-gradient(180deg, #0f2027, #203a43, #2c5364);
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-    }
+:root {
+    --bg-light: #f2f2f7;
+    --bg-dark: #0b0b0f;
+    --card-light: #ffffff;
+    --card-dark: #1c1c1e;
+    --text-light: #000;
+    --text-dark: #fff;
+    --accent: #0a84ff;
+}
 
-    .card {
-        width: 320px;
-        padding: 24px;
-        border-radius: 24px;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(20px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        text-align: center;
+@media (prefers-color-scheme: dark) {
+    body.auto {
+        background: var(--bg-dark);
+        color: var(--text-dark);
     }
+}
 
-    h1 {
-        font-size: 20px;
-        margin-bottom: 16px;
-        opacity: 0.9;
-    }
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display";
+    background: var(--bg-light);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    transition: background .4s, color .4s;
+}
 
-    .temp {
-        font-size: 64px;
-        font-weight: 600;
-        margin: 16px 0;
-    }
+body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
 
-    .controls {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
+.phone {
+    width: 100%;
+    max-width: 390px;
+    padding: 20px;
+}
 
-    button {
-        border: none;
-        border-radius: 14px;
-        padding: 12px 16px;
-        font-size: 16px;
-        background: rgba(255,255,255,0.2);
-        color: white;
-        cursor: pointer;
-        transition: 0.2s;
-    }
+.card {
+    background: var(--card-light);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,.2);
+    transition: background .4s;
+}
 
-    button:hover {
-        background: rgba(255,255,255,0.35);
-    }
+body.dark .card {
+    background: var(--card-dark);
+}
 
-    .modes {
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
-        margin-bottom: 16px;
-    }
+h1 {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 16px;
+}
 
-    .mode.active {
-        background: #4fc3f7;
-        color: black;
-        font-weight: 600;
-    }
+.temp {
+    font-size: 72px;
+    font-weight: 600;
+    text-align: center;
+    transition: transform .3s;
+}
 
-    .power {
-        margin-top: 12px;
-        background: #ff5252;
-        font-weight: bold;
-    }
+.controls, .modes, .fan {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+    gap: 8px;
+}
 
-    .power.off {
-        background: #4caf50;
-    }
+button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    background: rgba(0,0,0,.05);
+    transition: all .25s;
+}
 
-    .status {
-        margin-top: 12px;
-        font-size: 14px;
-        opacity: 0.8;
-    }
+body.dark button {
+    background: rgba(255,255,255,.08);
+    color: white;
+}
+
+button:active {
+    transform: scale(.95);
+}
+
+.mode.active, .fan button.active {
+    background: var(--accent);
+    color: white;
+}
+
+.toggle {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.status {
+    text-align: center;
+    font-size: 14px;
+    opacity: .7;
+    margin-top: 12px;
+}
 </style>
 </head>
 
-<body>
+<body class="auto">
+<div class="phone">
+    <div class="card">
+        <h1>Ar Condicionado</h1>
 
-<div class="card">
-    <h1>Ar Condicionado</h1>
+        <div class="temp" id="temp">24°</div>
 
-    <div class="temp" id="temp">24°</div>
+        <div class="controls">
+            <button onclick="temp(-1)">−</button>
+            <button onclick="temp(1)">+</button>
+        </div>
 
-    <div class="controls">
-        <button onclick="changeTemp(-1)">−</button>
-        <button onclick="changeTemp(1)">+</button>
+        <div class="modes">
+            <button class="mode active" onclick="mode(this)">❄️ Frio</button>
+            <button class="mode" onclick="mode(this)">🌀 Ventilar</button>
+            <button class="mode" onclick="mode(this)">🔥 Aquecer</button>
+        </div>
+
+        <div class="fan">
+            <button class="active" onclick="fan(this)">🌬️ Baixo</button>
+            <button onclick="fan(this)">🌬️ Médio</button>
+            <button onclick="fan(this)">🌬️ Alto</button>
+        </div>
+
+        <div class="toggle">
+            <button onclick="togglePower()">⏻ Liga/Desliga</button>
+            <button onclick="toggleTheme()">🌙 Tema</button>
+        </div>
+
+        <div class="status" id="status">Ligado • Frio • Ventilador Baixo</div>
     </div>
-
-    <div class="modes">
-        <button class="mode active" onclick="setMode(this)">❄️ Frio</button>
-        <button class="mode" onclick="setMode(this)">🌀 Ventilar</button>
-        <button class="mode" onclick="setMode(this)">🔥 Aquecer</button>
-    </div>
-
-    <button id="powerBtn" class="power" onclick="togglePower()">⏻ Desligar</button>
-
-    <div class="status" id="status">Ligado • Modo Frio</div>
 </div>
 
 <script>
-    let temperature = 24;
-    let isOn = true;
-    let currentMode = "Frio";
+let temperature = 24;
+let isOn = true;
+let currentMode = "Frio";
+let fanSpeed = "Baixo";
+let dark = false;
 
-    function changeTemp(value) {
-        if (!isOn) return;
-        temperature += value;
-        temperature = Math.max(16, Math.min(30, temperature));
-        document.getElementById("temp").innerText = temperature + "°";
-    }
+function temp(v){
+    if(!isOn) return;
+    temperature = Math.min(30, Math.max(16, temperature+v));
+    document.getElementById("temp").innerText = temperature+"°";
+    document.getElementById("temp").style.transform = "scale(1.05)";
+    setTimeout(()=>document.getElementById("temp").style.transform="scale(1)",200);
+}
 
-    function setMode(button) {
-        if (!isOn) return;
-        document.querySelectorAll(".mode").forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
-        currentMode = button.innerText.trim();
-        updateStatus();
-    }
+function mode(el){
+    if(!isOn) return;
+    document.querySelectorAll(".mode").forEach(b=>b.classList.remove("active"));
+    el.classList.add("active");
+    currentMode = el.innerText;
+    update();
+}
 
-    function togglePower() {
-        isOn = !isOn;
-        const btn = document.getElementById("powerBtn");
-        btn.innerText = isOn ? "⏻ Desligar" : "⏻ Ligar";
-        btn.classList.toggle("off");
-        updateStatus();
-    }
+function fan(el){
+    if(!isOn) return;
+    document.querySelectorAll(".fan button").forEach(b=>b.classList.remove("active"));
+    el.classList.add("active");
+    fanSpeed = el.innerText.replace("🌬️","").trim();
+    update();
+}
 
-    function updateStatus() {
-        document.getElementById("status").innerText =
-            isOn ? `Ligado • ${currentMode}` : "Desligado";
-    }
+function togglePower(){
+    isOn = !isOn;
+    update();
+}
+
+function toggleTheme(){
+    dark = !dark;
+    document.body.classList.toggle("dark", dark);
+    document.body.classList.remove("auto");
+}
+
+function update(){
+    document.getElementById("status").innerText =
+        isOn ? `Ligado • ${currentMode} • Ventilador ${fanSpeed}` : "Desligado";
+}
+
+/* ---------- PWA ---------- */
+const manifest = {
+    name: "Controle de Ar",
+    short_name: "Ar",
+    start_url: ".",
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: "#0a84ff",
+    icons: [{
+        src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAA",
+        sizes: "192x192",
+        type: "image/png"
+    }]
+};
+
+const blob = new Blob([JSON.stringify(manifest)], {type: "application/json"});
+const manifestURL = URL.createObjectURL(blob);
+const link = document.createElement("link");
+link.rel = "manifest";
+link.href = manifestURL;
+document.head.appendChild(link);
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(URL.createObjectURL(
+        new Blob([`self.addEventListener('fetch',()=>{})`],{type:'text/javascript'})
+    ));
+}
 </script>
-
 </body>
 </html>
