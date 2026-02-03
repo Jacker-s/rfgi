@@ -1,0 +1,5 @@
+$officePath = "C:\Program Files\Microsoft Office\root\Office16"
+
+Get-ChildItem $officePath -Filter "*.disabled" | ForEach-Object {
+    Rename-Item $_.FullName ($_.Name -replace ".disabled","")
+}
